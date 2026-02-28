@@ -1,10 +1,14 @@
-import { Routes, Route } from "react-router"
-import { SignIn } from "../pages/SingIn"
+import { Routes, Route } from "react-router";
 
-export function AuthRoutes(){
-  return(
+import { SignIn } from "../pages/SingIn";
+import { AuthLayout } from "../components/AuthLayout";
+
+export function AuthRoutes() {
+  return (
     <Routes>
-      <Route path="/" element={<SignIn/>}/>
+      <Route path="/" element={<AuthLayout />}>
+        <Route path="/" element={<SignIn />} />
+      </Route>
     </Routes>
-  )
+  );
 }

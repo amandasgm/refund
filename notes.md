@@ -1,6 +1,8 @@
 # Refund App Frontend
+
 ## Iniciando
-- Instalando o react: ```npm create vite@latest```
+
+- Instalando o react: `npm create vite@latest`
 - Apagando pastas e limpando arquivos:
   - App.css (apagamos)
   - App.tsx (limpamos)
@@ -14,24 +16,31 @@
 - Importando fonte no HTML
 
 ## Tailwind CSS
-- INSTALANDO: ```npm install tailwindcss @tailwindcss/vite```
-- CONFIGURANDO: dentro de vite.cofig.ts:    
+
+- INSTALANDO: `npm install tailwindcss @tailwindcss/vite`
+- CONFIGURANDO: dentro de vite.cofig.ts:
+
   ```
   import { defineConfig } from 'vite'
   import tailwindcss from '@tailwindcss/vite'
 
   export default defineConfig({
-    plugins: [tailwindcss()], 
-  }) 
+    plugins: [tailwindcss()],
+  })
+
+  ```
 
 - IMPORTANDO NO CSS: dentro do index.css:
-  - ```@import "tailwindcss"``` 
+  - `@import "tailwindcss"`
 
 ### Extensao para Tailwind
+
 - Tailwind CSS Intelicense (ja ta instalado)
 
 ### Customizando estilo
+
 - No index.css:
+
 ```
 @theme {
   --color-gray-100: #1f2523;
@@ -48,13 +57,23 @@
   --text-xxs: 0.625rem;
 }
 ```
+
 - Ou pegamos alguma classe ja existente no tailwind e passamos outro valor, ou criamos uma classe do zero, tipo --text-xxs
 
 ### Instalando o React Router
-- ```npm i react-router```
+
+- `npm i react-router`
 
 ## Arquivos de rota
+
 - **routes/auth-routes.tsx:** rotas de autenticação, seprando rotas segundo perfil de usuario
 - **routes/index.tsx:** responsavel por rederizar as rotas, qual tipo de rota sera carregada a depender do usuario, se ele esta logado ou nao.
-- **App.tsx:** ponto de entrada que rederiza as rotas 
+- **App.tsx:** ponto de entrada que rederiza as rotas
+- ![alt text](src/assets/notes/1.png)
+
+## AuthLayout
+- Vai ser a rota publica que vamos usar para logar ou cadastrar usuario
+- Importamos o ```import { Outlet } from "react-router";```
+- Ele é como se fosse uma caixa vazia, esperando receber o objeto especifico 
+- Tudo que esta fora dele se repete, seja la pagina de login ou na de cadastro 
 
