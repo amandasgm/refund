@@ -50,3 +50,11 @@
 ```
 - Ou pegamos alguma classe ja existente no tailwind e passamos outro valor, ou criamos uma classe do zero, tipo --text-xxs
 
+### Instalando o React Router
+- ```npm i react-router```
+
+## Arquivos de rota
+- **routes/auth-routes.tsx:** rotas de autenticação, seprando rotas segundo perfil de usuario
+- **routes/index.tsx:** responsavel por rederizar as rotas, qual tipo de rota sera carregada a depender do usuario, se ele esta logado ou nao.
+- **App.tsx:** ponto de entrada que rederiza as rotas 
+
