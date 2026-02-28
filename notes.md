@@ -11,4 +11,7 @@
   - eslint.config.js (apagamos)
 - Apagamos todas as configuraçoes do esLint que vem instalado
 - Trocando o favIcon no HTML
+- Importando fonte no HTML
+
+## 
 
