@@ -4,15 +4,18 @@ import { Button } from "../components/Button";
 import { useState } from "react";
 
 export function SignIn() {
+  // state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // quando clicar em enviar
   function onSend(e: React.SyntheticEvent) {
     e.preventDefault();
-    console.log(email, password)
+    console.log(email, password);
   }
 
+  // html
   return (
     <form onSubmit={onSend} className="w-full flex flex-col gap-4">
       <Input
@@ -30,8 +33,13 @@ export function SignIn() {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <Button type="submit" children="Entrar" isLoading={isLoading}/>
-      <Button children="Criar conta" bg="without" />
+      <Button type="submit" children="Entrar" isLoading={isLoading} />
+      <a
+        href="/signup"
+        className="text-sm font-semibold text-gray-100 mt-10  mb-4 text-center hover:text-green-800 transition easy-linear"
+      >
+        Criar conta
+      </a>
     </form>
   );
 }
