@@ -1,6 +1,7 @@
 import { CATEGORIES, CATEGORIES_KEYS } from "../utils/categories";
 
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 import { Input } from "../components/Input";
 import { Select } from "../components/Select";
@@ -14,9 +15,11 @@ export function Refund() {
   const [filename, setFilename] = useState<File | null>(null);
   const [isLoading, setIsloading] = useState(false);
 
+  const navigate = useNavigate()
+
   function onSend(e: React.SyntheticEvent) {
-    e.preventDefault();
-    console.log(name, price, category, filename);
+    e.preventDefault();    
+    navigate("/confirm", {state: {fromSubmit: true}}) // somente pode navegar atraves do submit, e nao colocando diretamente na url
   }
 
   return (
