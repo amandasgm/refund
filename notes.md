@@ -18,6 +18,7 @@
 ## Tailwind CSS
 
 - INSTALANDO: `npm install tailwindcss @tailwindcss/vite`
+- INSTALANDO: tailwind para classes e variantes ``` npm i tailwind-merge```
 - CONFIGURANDO: dentro de vite.cofig.ts:
 
   ```
@@ -29,6 +30,12 @@
   })
 
   ```
+## CLSX 
+- ✔️ Código mais limpo
+- ✔️ Menos ternário feio
+- ✔️ Fácil manutenção
+- ✔️ Perfeito para Tailwind
+``` npm install clsx ```
 
 - IMPORTANDO NO CSS: dentro do index.css:
   - `@import "tailwindcss"`
