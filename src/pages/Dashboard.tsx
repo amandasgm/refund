@@ -1,6 +1,8 @@
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 
+import lupaSvg from "../assets/search.svg"
+
 import { useState } from "react";
 
 export function DashBoard() {
@@ -17,13 +19,15 @@ export function DashBoard() {
 
       <form
         onSubmit={fetchRefund}
-        className="flex flex-1 items-center justify-between border-b-[1px] border-b-gray-400 md:flex-row gap-2 mt-6"
+        className="flex flex-1 items-center justify-between border-b-[1px] border-b-gray-400 md:flex-row pb-8 gap-2 mt-6"
       >
         <Input
           placeholder="pesquisar pelo nome"
           onChange={(e) => setName(e.target.value)}
         />
-        <Button children="Teste"/>
+        <Button type="submit" variant="icon">
+          <img src={lupaSvg} alt="" />
+        </Button>
       </form>
     </div>
   );

@@ -1,26 +1,31 @@
-const bgStyles = {
-  with: "bg-green-100 text-white hover:bg-green-200 transition easy-linear disabled:opacity-50 disabled:cursor-progress",
-  without: "bg-transparent text-gray-100 hover:text-green-100 transition-colors duration-300",
-};
+import { classMerge } from "../utils/classMerge";
 
 type Props = React.ComponentProps<"button"> & {
   isLoading?: boolean;
-  bg?: keyof typeof bgStyles;
+  variant?: "base" | "icon" | "iconSmall";
 };
 
-export function Button({
-  type = "button",
-  isLoading,
-  bg = "with",
-  children,
-  ...rest
-}: Props) {
+const variants = {
+  button: {
+    base: "h-12",
+    icon: "h-12 w-12",
+    iconSmall: "h-10 w-10",
+  },
+};
+
+export function Button({ type = "button", isLoading, className, variant = "base", children, ...rest }: Props) {
+
+  
   return (
     <div>
       <button
         type={type}
         disabled={isLoading}
-        className={`${bgStyles[bg]} flex items-center justify-center w-full h-12 rounded-lg cursor-pointer`}
+        className={classMerge([
+          "flex items-center justify-center rounded-lg cursor-pointer bg-green-100 text-white hover:bg-green-200 transition ease-linear disabled:opacity-50 disabled:cursor-progress",
+          variants.button[variant],
+          className,
+        ])}
         {...rest}
       >
         {children}
