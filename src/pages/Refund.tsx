@@ -15,12 +15,12 @@ export function Refund() {
   const [filename, setFilename] = useState<File | null>(null);
   const [isLoading, setIsloading] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   function onSend(e: React.SyntheticEvent) {
     e.preventDefault();
     console.log(name, price, category, filename);
-    navigate("/confirm", {state: {fromSubmit: true}}) // somente pode navegar atraves do submit, e nao colocando diretamente na url
+    navigate("/confirm", { state: { fromSubmit: true } }); // somente pode navegar atraves do submit, e nao colocando diretamente na url
   }
 
   return (
