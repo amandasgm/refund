@@ -22,7 +22,10 @@ export function RefundItem({ data, ...rest }: Props) {
           </div>
         </div>
         <div>
-          <small className="text-xs">{data.amount}</small>
+          <span className="flex text-sm items-center">
+            <p className="text-gray-300 text-xs mt-[2px]">R$</p> 
+            {data.amount}
+            </span>
         </div>
       </a>
     </div>
