@@ -69,7 +69,7 @@ export function Refund() {
           filename={filename && filename.name} // verifica se tem filename, se tiver (&&) pega o nome de filename
           onChange={(e) => e.target.files && setFilename(e.target.files[0])}
         />
-        <Button isLoading={isLoading} type="submit" children="Enviar" />
+        <Button isLoading={isLoading} type="submit" children="Enviar" variant="base"/>
       </div>
     </form>
   );

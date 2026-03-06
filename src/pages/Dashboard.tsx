@@ -4,6 +4,8 @@ import { RefundItem } from "../components/RefundItem";
 import { formatCurrency } from "../utils/formatCurrency";
 import { Pagination } from "../components/Paginations";
 
+import type { RefundItemProps } from "../components/RefundItem";
+
 import lupaSvg from "../assets/search.svg";
 import { CATEGORIES } from "../utils/categories";
 
@@ -23,6 +25,7 @@ export function DashBoard() {
   const [name, setName] = useState("");
   const [page, setPage] = useState(1);
   const [totalOfPage, setTotalOfPages] = useState(10);
+  const [refunds, setRefunds] = useState<RefundItemProps[]>(REFUND_EXEMPLE)
 
   function fetchRefund(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -60,7 +63,7 @@ export function DashBoard() {
       </form>
       <div className="flex flex-col gap-4 my-6 max-h-[342px] overflow-y-scroll">
         {REFUND_EXEMPLE.map((item) => (
-          <RefundItem key={item.id} data={item} />
+          <RefundItem key={item.id} data={item} href={`/refund/${item.id}`}/>
         ))}
       </div>
 

@@ -7,7 +7,7 @@ type Props = React.ComponentProps<"button"> & {
 
 const variants = {
   button: {
-    base: "h-12",
+    base: "h-12 w-full",
     icon: "h-12 w-12",
     iconSmall: "h-7 w-7",
   },
