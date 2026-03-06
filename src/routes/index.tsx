@@ -5,17 +5,34 @@ import { AuthRoutes } from "./AuthRoutes";
 import { EmployeeRoutes } from "./EmployeeRoutes";
 import { ManagerRoutes } from "./MenagerRoutes";
 
-const isLoading = true
+const isLoading = false;
 
-export function Routes(){
+const session = {
+  user: {
+    role: "employee",
+  },
+};
 
-  if(isLoading){
-    return <Loading/>
+
+export function Routes() {
+  function LogicRoute() {
+    switch (session?.user.role) {
+      case "employee":
+        return <EmployeeRoutes />;
+      case "manager":
+        return <ManagerRoutes />;
+
+      default:
+        return <AuthRoutes />;
+    }
   }
-  return(
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  return (
     <BrowserRouter>
-      <AuthRoutes />
-      
+      <LogicRoute />
     </BrowserRouter>
-  )
+  );
 }

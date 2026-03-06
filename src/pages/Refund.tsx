@@ -13,9 +13,9 @@ import { Upload } from "../components/Upload";
 import { Button } from "../components/Button";
 
 export function Refund() {
-  const [category, setCategory] = useState("Amanda");
-  const [name, setName] = useState("teste");
-  const [price, setPrice] = useState("30");
+  const [category, setCategory] = useState("");
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
   const [filename, setFilename] = useState<File | null>(null);
   const [isLoading, setIsloading] = useState(false);
 
