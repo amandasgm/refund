@@ -1,8 +1,9 @@
 # Refund App
+
 - 100% PROJETO FOCADO EM COMPONETIZAÇÃ0 E ROTAS
-Uma aplicação web para solicitação de reembolso de despesas, desenvolvida com React, TypeScript e Vite.
-![alt text](image.png)
-![alt text](image-1.png)
+  Uma aplicação web para solicitação de reembolso de despesas, desenvolvida com React, TypeScript e Vite.
+  ![alt text](src/assets/notes/employeeHeader.png)
+  ![alt text](src/assets/notes/managerHeader.png)
 
 ## Descrição
 
@@ -35,5 +36,3 @@ src/
 ├── assets/              # Recursos estáticos
 └── main.tsx             # Ponto de entrada da aplicação
 ```
-
-
