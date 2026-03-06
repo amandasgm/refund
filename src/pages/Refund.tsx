@@ -1,7 +1,11 @@
 import { CATEGORIES, CATEGORIES_KEYS } from "../utils/categories";
+import fileSvg from "../assets/file.svg";
 
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+
+// O useParams é um hook do React Router que serve para pegar parâmetros da URL dentro de um componente React.
+// Ou seja, quando você tem uma rota dinâmica, tipo um ID na URL, o useParams permite ler esse valor no componente.
 
 import { Input } from "../components/Input";
 import { Select } from "../components/Select";
@@ -9,17 +13,21 @@ import { Upload } from "../components/Upload";
 import { Button } from "../components/Button";
 
 export function Refund() {
-  const [category, setCategory] = useState("");
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("Amanda");
+  const [name, setName] = useState("teste");
+  const [price, setPrice] = useState("30");
   const [filename, setFilename] = useState<File | null>(null);
   const [isLoading, setIsloading] = useState(false);
 
   const navigate = useNavigate();
+  const params = useParams<{ id: string }>();
 
   function onSend(e: React.SyntheticEvent) {
     e.preventDefault();
-    console.log(name, price, category, filename);
+
+    if (params.id) {
+      return navigate(-1);
+    }
     navigate("/confirm", { state: { fromSubmit: true } }); // somente pode navegar atraves do submit, e nao colocando diretamente na url
   }
 
@@ -42,6 +50,7 @@ export function Refund() {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
+          disabled={!!params.id} // disabilita a opcao de edicao
         />
         <div className="flex  gap-4 ">
           <Select
@@ -49,6 +58,7 @@ export function Refund() {
             legend="Categoria"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
+            disabled={!!params.id}
           >
             {CATEGORIES_KEYS.map((category) => (
               <option key={category} value={category}>
@@ -63,13 +73,28 @@ export function Refund() {
             placeholder="R$0,00"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
+            disabled={!!params.id}
           />
         </div>
-        <Upload
-          filename={filename && filename.name} // verifica se tem filename, se tiver (&&) pega o nome de filename
-          onChange={(e) => e.target.files && setFilename(e.target.files[0])}
+        {params.id ? (
+          <a target="blank"
+          href="https://docs.google.com/document/d/1C2GunZxfote6LmeuFml1RUCUsgeSNZr7EQhBcAi8ZCo/edit?tab=t.0" className="text-sm text-green-100 font-semibold flex items-center justify-center gap-2 my-6 hover:opacity-70 transition ease-linear">
+            <img src={fileSvg} alt="" />
+            Abrir comprovante
+          </a>
+        ) : (
+          <Upload
+            filename={filename && filename.name} // verifica se tem filename, se tiver (&&) pega o nome de filename
+            onChange={(e) => e.target.files && setFilename(e.target.files[0])}
+          />
+        )}
+
+        <Button
+          isLoading={isLoading}
+          type="submit"
+          children={params.id ? "Voltar" : "Enviar"}
+          variant="base"
         />
-        <Button isLoading={isLoading} type="submit" children="Enviar" variant="base"/>
       </div>
     </form>
   );
