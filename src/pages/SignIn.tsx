@@ -1,36 +1,36 @@
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 
-import { useState } from "react";
+import { useActionState } from "react"; // para lidar com o estado de uma acao
 
 export function SignIn() {
-  // state
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [state, formAction, isLoading] = useActionState(onSend, {
+    email: "amanda@gmail.com",
+    password: "123",
+  });
 
   // quando clicar em enviar
-  function onSend(e: React.SyntheticEvent) {
-    e.preventDefault();
-    console.log(email, password);
+  function onSend(prevState: any, formData: FormData) {
+    console.log(formData.get("email"));
   }
 
   // html
   return (
-    <form onSubmit={onSend} className="w-full flex flex-col gap-4">
+    <form action={formAction} className="w-full flex flex-col gap-4">
       <Input
+        name="email"
         legend="email"
         required
         type="email"
         placeholder="seuemail@gmail.com"
-        onChange={(e) => setEmail(e.target.value)}
+        defaultValue={state.email}
       />
       <Input
+        name="password"
         legend="senha"
         required
         type="password"
         placeholder="********"
-        onChange={(e) => setPassword(e.target.value)}
       />
 
       <Button type="submit" children="Entrar" isLoading={isLoading} />
