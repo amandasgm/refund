@@ -9,10 +9,9 @@ const isLoading = false;
 
 const session = {
   user: {
-    role: "manager",
+    role: "",
   },
 };
-
 
 export function Routes() {
   function LogicRoute() {
