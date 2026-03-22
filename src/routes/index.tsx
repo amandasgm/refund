@@ -9,15 +9,9 @@ import { ManagerRoutes } from "./MenagerRoutes";
 
 const isLoading = false;
 
-const session = {
-  user: {
-    role: "",
-  },
-};
 
 export function Routes() {
-  const context = useAuth()
-  console.log(context.session)
+  const { session } = useAuth()
 
   function LogicRoute() {
     switch (session?.user.role) {

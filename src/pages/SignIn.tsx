@@ -3,6 +3,7 @@ import { Button } from "../components/Button";
 
 import { api } from "../services/api"
 import { AxiosError } from "axios"
+import { useAuth } from "../hooks/useAuth";
 
 import { z, ZodError } from "zod";
 
@@ -16,6 +17,8 @@ const signInSchema = z.object({
 export function SignIn() {
   const [state, formAction, isLoading] = useActionState(onSend, null)
 
+  const auth = useAuth()
+
   // quando clicar em enviar
   async function onSend(_: any, formData: FormData) {
     try {
@@ -25,7 +28,7 @@ export function SignIn() {
       })
   
       const response = await api.post("/sessions", data)
-      console.log(response.data)
+      auth.save(response.data)
 
     } catch (error) {
       if(error instanceof ZodError){
