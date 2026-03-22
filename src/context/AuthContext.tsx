@@ -1,18 +1,17 @@
-import { useState } from "react"
+import { useState } from "react";
 import { createContext, type ReactNode } from "react";
 
 // tipagem da sessao
 type AuthContext = {
-  session: null | UserAPIResponse
-}
+  session: null | UserAPIResponse;
+};
 
-export const AuthContext = createContext({});
+export const AuthContext = createContext({} as AuthContext);
 
 // provider do context
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<null | UserAPIResponse>(null);
   return (
-    <AuthContext.Provider value={{ name: "Amanda Santana" }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ session }}>{children}</AuthContext.Provider>
   );
 }
