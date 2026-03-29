@@ -4,6 +4,8 @@ import fileSvg from "../assets/file.svg";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { set, z, ZodError } from "zod";
+import { api } from "../services/api";
+import { AxiosError } from "axios";
 
 // O useParams é um hook do React Router que serve para pegar parâmetros da URL dentro de um componente React.
 // Ou seja, quando você tem uma rota dinâmica, tipo um ID na URL, o useParams permite ler esse valor no componente.
@@ -19,12 +21,10 @@ const refundSchema = z.object({
     .trim()
     .min(3, { message: "Informe um nome claro para a solicitação" }),
   category: z.string().min(1, { message: "Selecione uma categoria" }),
-  price: z.coerce
+  amount: z.coerce
     .number({ message: "Valor invalido" })
     .positive({ message: "O valor deve ser positivo" }),
 });
-
-
 
 export function Refund() {
   const [category, setCategory] = useState("");
@@ -36,11 +36,9 @@ export function Refund() {
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
   // faz a formtacao da moeda price para real brasileiro, usando a API Intl.NumberFormat
- function formatCurrency(value: string) {
+  function formatCurrency(value: string) {
     const onlyNumbers = value.replace(/\D/g, "");
-
     const numberValue = Number(onlyNumbers) / 100;
-
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
@@ -51,7 +49,8 @@ export function Refund() {
     const formattedValue = formatCurrency(e.target.value);
     setPrice(formattedValue);
   }
-  function onSend(e: React.SyntheticEvent) {
+  // IMPORTANT 
+  async function onSend(e: React.SyntheticEvent) {
     e.preventDefault();
 
     if (params.id) {
@@ -60,31 +59,31 @@ export function Refund() {
 
     try {
       setIsloading(true);
-
       const numericPrice = Number(
-        price
-          .replace("R$", "")
-          .replace(/\./g, "")
-          .replace(",", ".")
-          .trim()
+        price.replace("R$", "").replace(/\./g, "").replace(",", ".").trim(),
       );
-
       const data = refundSchema.parse({
         name,
         category,
-        price: numericPrice
+        amount: numericPrice,
       });
-
-      console.log({ name, category, price, filename });
+      // IMPORTANT: aqui, a gente envia os dados do formulario para a API
+      await api.post("/refunds", {
+        ...data,
+        filename: "123345678900987654323456789.png",
+      });
       navigate("/confirm", { state: { fromSubmit: true } }); // somente pode navegar atraves do submit, e nao colocando diretamente na url
-
     } catch (error) {
       console.log(error);
-
+      // erro de validacao
       if (error instanceof ZodError) {
         return alert(error.issues[0].message);
       }
-
+      // erro mais generico, que pode ser de rede, servidor, etc
+      if (error instanceof AxiosError) {
+        console.log(error.response);
+        return alert(error.response?.data.message);
+      }
       alert("Nao foi possivel realizar a solicitação de reembolso");
     } finally {
       setIsloading(false);
@@ -117,7 +116,7 @@ export function Refund() {
             required
             legend="Categoria"
             value={category}
-            onChange={(e) => setCategory(e.target.value)} 
+            onChange={(e) => setCategory(e.target.value)}
             disabled={!!params.id}
           >
             {CATEGORIES_KEYS.map((category) => (
