@@ -3,6 +3,7 @@ import fileSvg from "../assets/file.svg";
 
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { set, z, ZodError } from "zod";
 
 // O useParams é um hook do React Router que serve para pegar parâmetros da URL dentro de um componente React.
 // Ou seja, quando você tem uma rota dinâmica, tipo um ID na URL, o useParams permite ler esse valor no componente.
@@ -11,6 +12,19 @@ import { Input } from "../components/Input";
 import { Select } from "../components/Select";
 import { Upload } from "../components/Upload";
 import { Button } from "../components/Button";
+
+const refundSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(3, { message: "Informe um nome claro para a solicitação" }),
+  category: z.string().min(1, { message: "Selecione uma categoria" }),
+  price: z.coerce
+    .number({ message: "Valor invalido" })
+    .positive({ message: "O valor deve ser positivo" }),
+});
+
+
 
 export function Refund() {
   const [category, setCategory] = useState("");
@@ -21,14 +35,60 @@ export function Refund() {
 
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
+  // faz a formtacao da moeda price para real brasileiro, usando a API Intl.NumberFormat
+ function formatCurrency(value: string) {
+    const onlyNumbers = value.replace(/\D/g, "");
 
+    const numberValue = Number(onlyNumbers) / 100;
+
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(numberValue);
+  }
+
+  function handlePriceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const formattedValue = formatCurrency(e.target.value);
+    setPrice(formattedValue);
+  }
   function onSend(e: React.SyntheticEvent) {
     e.preventDefault();
 
     if (params.id) {
       return navigate(-1);
     }
-    navigate("/confirm", { state: { fromSubmit: true } }); // somente pode navegar atraves do submit, e nao colocando diretamente na url
+
+    try {
+      setIsloading(true);
+
+      const numericPrice = Number(
+        price
+          .replace("R$", "")
+          .replace(/\./g, "")
+          .replace(",", ".")
+          .trim()
+      );
+
+      const data = refundSchema.parse({
+        name,
+        category,
+        price: numericPrice
+      });
+
+      console.log({ name, category, price, filename });
+      navigate("/confirm", { state: { fromSubmit: true } }); // somente pode navegar atraves do submit, e nao colocando diretamente na url
+
+    } catch (error) {
+      console.log(error);
+
+      if (error instanceof ZodError) {
+        return alert(error.issues[0].message);
+      }
+
+      alert("Nao foi possivel realizar a solicitação de reembolso");
+    } finally {
+      setIsloading(false);
+    }
   }
 
   return (
@@ -57,7 +117,7 @@ export function Refund() {
             required
             legend="Categoria"
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => setCategory(e.target.value)} 
             disabled={!!params.id}
           >
             {CATEGORIES_KEYS.map((category) => (
@@ -69,16 +129,19 @@ export function Refund() {
           <Input
             legend="valor"
             required
-            type="number"
+            type="text"
             placeholder="R$0,00"
             value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            onChange={handlePriceChange}
             disabled={!!params.id}
           />
         </div>
         {params.id ? (
-          <a target="blank"
-          href="https://docs.google.com/document/d/1C2GunZxfote6LmeuFml1RUCUsgeSNZr7EQhBcAi8ZCo/edit?tab=t.0" className="text-sm text-green-100 font-semibold flex items-center justify-center gap-2 my-6 hover:opacity-70 transition ease-linear">
+          <a
+            target="blank"
+            href="https://docs.google.com/document/d/1C2GunZxfote6LmeuFml1RUCUsgeSNZr7EQhBcAi8ZCo/edit?tab=t.0"
+            className="text-sm text-green-100 font-semibold flex items-center justify-center gap-2 my-6 hover:opacity-70 transition ease-linear"
+          >
             <img src={fileSvg} alt="" />
             Abrir comprovante
           </a>

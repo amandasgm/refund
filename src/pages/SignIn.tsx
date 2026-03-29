@@ -12,9 +12,7 @@ import { useActionState } from "react"; // para lidar com o estado de uma acao
 const signInSchema = z.object({
   email: z.string().email({ message: "Email invalido"}),
   password: z.string().trim().min(1, {message: "Informe a senha"})
-})
-
-export 
+}) 
 
 export function SignIn() {
   const [state, formAction, isLoading] = useActionState(onSend, null)
