@@ -6,6 +6,7 @@ type AuthContext = {
   isLoading: boolean
   session: null | UserAPIResponse;
   save: (data: UserAPIResponse) => void
+  remove: () => void
 };
 
 // persistindo login
@@ -23,6 +24,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(`${LOCAL_STORAGE_KEY}:token`, data.token)
 
     setSession(data)
+  }
+
+  function remove(){
+    setSession(null)
+    localStorage.removeItem(`${LOCAL_STORAGE_KEY}:user`)
+    localStorage.removeItem(`${LOCAL_STORAGE_KEY}:token`)
+
+    window.location.assign("/")
   }
 
   function loadUser(){
@@ -44,6 +53,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   },[])
 
   return (
-    <AuthContext.Provider value={{ session, save, isLoading }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ session, save, isLoading, remove }}>{children}</AuthContext.Provider>
   );
 }
