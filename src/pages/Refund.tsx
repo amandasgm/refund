@@ -3,7 +3,7 @@ import fileSvg from "../assets/file.svg";
 
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { set, z, ZodError } from "zod";
+import { z, ZodError } from "zod";
 import { api } from "../services/api";
 import { AxiosError } from "axios";
 
@@ -30,7 +30,7 @@ export function Refund() {
   const [category, setCategory] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [filename, setFilename] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsloading] = useState(false);
 
   const navigate = useNavigate();
@@ -49,7 +49,8 @@ export function Refund() {
     const formattedValue = formatCurrency(e.target.value);
     setPrice(formattedValue);
   }
-  // IMPORTANT 
+  
+ // IMPORTANT
   async function onSend(e: React.SyntheticEvent) {
     e.preventDefault();
 
@@ -59,6 +60,14 @@ export function Refund() {
 
     try {
       setIsloading(true);
+      if(!file){
+        return alert("Envie um comprovante de pagamento")
+      }
+      const fileUploadForm = new FormData();
+      fileUploadForm.append("file", file);
+
+      const response = await api.post("/uploads", fileUploadForm)
+
       const numericPrice = Number(
         price.replace("R$", "").replace(/\./g, "").replace(",", ".").trim(),
       );
@@ -67,10 +76,10 @@ export function Refund() {
         category,
         amount: numericPrice,
       });
-      // IMPORTANT: aqui, a gente envia os dados do formulario para a API
+    
       await api.post("/refunds", {
         ...data,
-        filename: "123345678900987654323456789.png",
+        filename: response.data.filename,
       });
       navigate("/confirm", { state: { fromSubmit: true } }); // somente pode navegar atraves do submit, e nao colocando diretamente na url
     } catch (error) {
@@ -146,8 +155,8 @@ export function Refund() {
           </a>
         ) : (
           <Upload
-            filename={filename && filename.name} // verifica se tem filename, se tiver (&&) pega o nome de filename
-            onChange={(e) => e.target.files && setFilename(e.target.files[0])}
+            filename={file && file.name} // verifica se tem file, se tiver (&&) pega o nome de file
+            onChange={(e) => e.target.files && setFile(e.target.files[0])}
           />
         )}
 
