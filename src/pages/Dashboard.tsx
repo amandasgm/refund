@@ -14,15 +14,7 @@ import { CATEGORIES } from "../utils/categories";
 
 import { useState, useEffect, type Ref } from "react";
 
-const REFUND_EXEMPLE = [
-  {
-    id: "123",
-    name: "Amanda",
-    category: "Hospedagem",
-    amount: formatCurrency(34.5),
-    categoryImage: CATEGORIES["accommodation"].icon,
-  },
-];
+
 
 const PER_PAGE = 5;
 
@@ -30,14 +22,26 @@ export function DashBoard() {
   const [name, setName] = useState("");
   const [page, setPage] = useState(1);
   const [totalOfPage, setTotalOfPages] = useState(10);
-  const [refunds, setRefunds] = useState<RefundItemProps[]>(REFUND_EXEMPLE);
+  const [refunds, setRefunds] = useState<RefundItemProps[]>([]);
 
   async function fetchRefund() {
     try {
       const response = await api.get<RefundsPaginationAPIResponse>(
         `/refunds?name=${name.trim()}&page=${page}&perPage=${PER_PAGE}`,
       );
-      console.log(response.data);
+      
+      // populando o estado
+      setRefunds(
+        response.data.refunds.map((refund) => ({
+          id: refund.id,
+          name: refund.user.name,
+          description: refund.name,
+          amount: formatCurrency(refund.amount),
+          categoryImage: CATEGORIES[refund.category as keyof typeof CATEGORIES]
+            .icon,
+        })),
+      );
+      setTotalOfPages(response.data.pagination.totalPages);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
@@ -84,7 +88,7 @@ export function DashBoard() {
         </Button>
       </form>
       <div className="flex flex-col gap-4 my-6 max-h-[342px] overflow-y-scroll">
-        {REFUND_EXEMPLE.map((item) => (
+        {refunds.map((item) => (
           <RefundItem key={item.id} data={item} href={`/refund/${item.id}`} />
         ))}
       </div>
