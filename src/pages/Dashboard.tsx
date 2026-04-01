@@ -14,8 +14,6 @@ import { CATEGORIES } from "../utils/categories";
 
 import { useState, useEffect, type Ref } from "react";
 
-
-
 const PER_PAGE = 5;
 
 export function DashBoard() {
@@ -29,7 +27,7 @@ export function DashBoard() {
       const response = await api.get<RefundsPaginationAPIResponse>(
         `/refunds?name=${name.trim()}&page=${page}&perPage=${PER_PAGE}`,
       );
-      
+
       // populando o estado
       setRefunds(
         response.data.refunds.map((refund) => ({
@@ -37,8 +35,8 @@ export function DashBoard() {
           name: refund.user.name,
           description: refund.name,
           amount: formatCurrency(refund.amount),
-          categoryImage: CATEGORIES[refund.category as keyof typeof CATEGORIES]
-            .icon,
+          categoryImage:
+            CATEGORIES[refund.category as keyof typeof CATEGORIES].icon,
         })),
       );
       setTotalOfPages(response.data.pagination.totalPages);
@@ -52,6 +50,11 @@ export function DashBoard() {
         alert("Erro ao buscar reembolsos");
       }
     }
+  }
+
+  function onSubmit(e: React.SyntheticEvent) {
+    e.preventDefault();
+    fetchRefund();
   }
 
   function handlePagination(action: "next" | "previous") {
@@ -76,7 +79,7 @@ export function DashBoard() {
       <h1 className="text-gray-100 font-bold text-xl flex-1">Solicitações</h1>
 
       <form
-        onSubmit={fetchRefund}
+        onSubmit={onSubmit}
         className="flex flex-1  justify-between border-b-[1px] border-b-gray-400 md:flex-row pb-8 gap-2 mt-6"
       >
         <Input
