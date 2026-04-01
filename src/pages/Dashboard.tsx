@@ -14,7 +14,7 @@ import { CATEGORIES } from "../utils/categories";
 
 import { useState, useEffect, type Ref } from "react";
 
-const PER_PAGE = 5;
+const PER_PAGE = 3;
 
 export function DashBoard() {
   const [name, setName] = useState("");
@@ -72,7 +72,7 @@ export function DashBoard() {
 
   useEffect(() => {
     fetchRefund();
-  }, []);
+  }, [page]);
 
   return (
     <div className="bg-gray-500 rounded-xl p-10">
