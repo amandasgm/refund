@@ -1,7 +1,7 @@
 import { CATEGORIES, CATEGORIES_KEYS } from "../utils/categories";
 import fileSvg from "../assets/file.svg";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { z, ZodError } from "zod";
 import { api } from "../services/api";
@@ -32,13 +32,14 @@ export function Refund() {
   const [price, setPrice] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsloading] = useState(false);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
   // faz a formtacao da moeda price para real brasileiro, usando a API Intl.NumberFormat
   function formatCurrency(value: string) {
     const onlyNumbers = value.replace(/\D/g, "");
-    const numberValue = Number(onlyNumbers) / 100;
+    const numberValue = Number(onlyNumbers);
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
@@ -99,6 +100,28 @@ export function Refund() {
     }
   }
 
+  async function fetchRefund(id: string) {
+    try {
+      const response = await api.get<RefundApiResponse>(`/refunds/${id}`);
+      const { name, category, amount } = response.data;
+      setName(name);
+      setCategory(category);
+      setPrice(formatCurrency(amount.toString()));
+      setFileUrl(response.data.filename);
+    } catch (error) {
+      console.log(error)
+
+      if (error instanceof AxiosError) {
+        alert(error.response?.data.message || "Nao foi possivel carregar os dados da solicitação")
+      }
+    }
+  }
+  useEffect(() => {
+    if (params.id) {
+      fetchRefund(params.id);
+    }
+  }, [params.id]);
+
   return (
     <form
       onSubmit={onSend}
@@ -134,6 +157,7 @@ export function Refund() {
               </option>
             ))}
           </Select>
+
           <Input
             legend="valor"
             required
@@ -144,10 +168,10 @@ export function Refund() {
             disabled={!!params.id}
           />
         </div>
-        {params.id ? (
+        {params.id && fileUrl ? (
           <a
             target="blank"
-            href="https://docs.google.com/document/d/1C2GunZxfote6LmeuFml1RUCUsgeSNZr7EQhBcAi8ZCo/edit?tab=t.0"
+            href="https://github.com/github-copilot/pro/signup?utm_source=vscode-completions-readme&utm_medium=first&utm_campaign=2025mar-em-MSFT-signup"
             className="text-sm text-green-100 font-semibold flex items-center justify-center gap-2 my-6 hover:opacity-70 transition ease-linear"
           >
             <img src={fileSvg} alt="" />

@@ -14,7 +14,7 @@ import { CATEGORIES } from "../utils/categories";
 
 import { useState, useEffect, type Ref } from "react";
 
-const PER_PAGE = 3;
+const PER_PAGE = 5;
 
 export function DashBoard() {
   const [name, setName] = useState("");
