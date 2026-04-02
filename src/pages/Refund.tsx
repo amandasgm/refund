@@ -33,6 +33,7 @@ export function Refund() {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsloading] = useState(false);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
@@ -50,8 +51,8 @@ export function Refund() {
     const formattedValue = formatCurrency(e.target.value);
     setPrice(formattedValue);
   }
-  
- // IMPORTANT
+
+  // IMPORTANT
   async function onSend(e: React.SyntheticEvent) {
     e.preventDefault();
 
@@ -61,13 +62,13 @@ export function Refund() {
 
     try {
       setIsloading(true);
-      if(!file){
-        return alert("Envie um comprovante de pagamento")
+      if (!file) {
+        return alert("Envie um comprovante de pagamento");
       }
       const fileUploadForm = new FormData();
       fileUploadForm.append("file", file);
 
-      const response = await api.post("/uploads", fileUploadForm)
+      const response = await api.post("/uploads", fileUploadForm);
 
       const numericPrice = Number(
         price.replace("R$", "").replace(/\./g, "").replace(",", ".").trim(),
@@ -77,7 +78,7 @@ export function Refund() {
         category,
         amount: numericPrice,
       });
-    
+
       await api.post("/refunds", {
         ...data,
         filename: response.data.filename,
@@ -109,10 +110,13 @@ export function Refund() {
       setPrice(formatCurrency(amount.toString()));
       setFileUrl(response.data.filename);
     } catch (error) {
-      console.log(error)
+      console.log(error);
 
       if (error instanceof AxiosError) {
-        alert(error.response?.data.message || "Nao foi possivel carregar os dados da solicitação")
+        alert(
+          error.response?.data.message ||
+            "Nao foi possivel carregar os dados da solicitação",
+        );
       }
     }
   }
@@ -169,14 +173,42 @@ export function Refund() {
           />
         </div>
         {params.id && fileUrl ? (
-          <a
-            target="blank"
-            href="https://github.com/github-copilot/pro/signup?utm_source=vscode-completions-readme&utm_medium=first&utm_campaign=2025mar-em-MSFT-signup"
-            className="text-sm text-green-100 font-semibold flex items-center justify-center gap-2 my-6 hover:opacity-70 transition ease-linear"
-          >
-            <img src={fileSvg} alt="" />
-            Abrir comprovante
-          </a>
+          <>
+            <button
+              type="button"
+              onClick={() => setIsReceiptOpen(true)}
+              className="text-sm text-green-100 font-semibold flex items-center justify-center gap-2 my-6 hover:opacity-70 transition ease-linear w-full"
+            >
+              <img src={fileSvg} alt="" />
+              Abrir comprovante
+            </button>
+
+            {isReceiptOpen && (
+              <div
+                className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                onClick={() => setIsReceiptOpen(false)}
+              >
+                <div
+                  className="bg-white rounded-xl shadow-lg max-w-3xl w-full h-[80vh] relative overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setIsReceiptOpen(false)}
+                    className="absolute top-3 right-3 bg-gray-200 px-3 py-1 rounded-md text-sm hover:bg-gray-300"
+                  >
+                    X
+                  </button>
+
+                  <iframe
+                    src={`http://localhost:3333/uploads/${fileUrl}`}
+                    className="w-full h-full rounded-xl"
+                    title="Comprovante"
+                  />
+                </div>
+              </div>
+            )}
+          </>
         ) : (
           <Upload
             filename={file && file.name} // verifica se tem file, se tiver (&&) pega o nome de file
